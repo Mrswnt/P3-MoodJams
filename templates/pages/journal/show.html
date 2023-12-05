@@ -1,0 +1,54 @@
+{% extends 'user.html' %}
+
+{% block title %}Journal Details - MoodJams{% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>{{ journal.date | format_date }} <span class="emoji">{% if journal.rating == 1 %}😭{% elif journal.rating == 2 %}😔{% elif journal.rating == 3 %}😐{% elif journal.rating == 4 %}😊{% elif journal.rating == 5 %}😁{% endif %}</span></h2>
+
+                {% for theme in journal.themes %}
+                    <span class="badge bg-primary me-2">{{ theme }}</span>
+                {% endfor %}
+
+                <p class="mt-3">{{ journal.description }}</p>
+            </div>
+
+            <div class="col-md-1">
+                <div class="divider"></div>
+            </div>
+
+            <div class="col-md-3">
+                <h3>Songs Recommendations</h3>
+
+                {% for song in recommendations %}
+                    <div class="card mb-3">
+                        <img src="{{ song.cover }}" class="card-img-top" alt="{{ song.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ song.name }} - {{ song.artist }}</h5>
+                            <a href="{{ song.spotify_link }}" target="_blank" class="btn btn-primary">Play on Spotify</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .divider {
+            border-right: 1px solid #000;
+            min-height: 80vh;
+            height: 100%;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+
+        .badge {
+            margin-bottom: 5px;
+        }
+    </style>
+{% endblock %}

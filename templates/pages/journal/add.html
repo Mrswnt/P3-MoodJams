@@ -1,0 +1,61 @@
+{% extends 'user.html' %}
+
+{% block title %}Add New Journal - MoodJams{% endblock %}
+
+{% block styles %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <h2>Add New Journal</h2>
+
+        <form action="{{ url_for('add_journal') }}" method="post">
+            <div class="mb-3">
+                <label for="moodRating" class="form-label">Mood Rating</label>
+                <div class="d-flex">
+                    {% for i in range(1, 6) %}
+                        <div class="form-check me-3">
+                            <input class="form-check-input" type="radio" name="moodRating" value="{{ i }}" id="rating{{ i }}" required {% if i == 5 %} checked {% endif %}>
+                            <label class="form-check-label" for="rating{{ i }}"> {% if i == 1 %}😭{% elif i == 2 %}😔{% elif i == 3 %}😐{% elif i == 4 %}😊{% elif i == 5 %}😁{% endif %}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="dailyTheme" class="form-label">Daily Theme</label>
+                <select class="form-select" id="dailyTheme" name="dailyTheme[]" multiple="multiple" required>
+                    {% for theme, genres in daily_themes.items() %}
+                        <option value="{{ theme }}">{{ theme }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="journalDescription" class="form-label">Today's Description</label>
+                <textarea class="form-control" id="journalDescription" name="journalDescription" rows="5" required></textarea>
+            </div>
+
+            <div class="mb-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" onclick="clearJournal()">Clear</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dailyTheme').select2({
+                placeholder: 'Select up to 3 themes',
+                tags: true,
+                maximumSelectionLength: 3,
+                closeOnSelect: false
+            });
+        });
+    </script>
+{% endblock %}
