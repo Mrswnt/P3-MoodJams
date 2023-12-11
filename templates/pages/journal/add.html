@@ -26,8 +26,8 @@
             <div class="mb-3">
                 <label for="dailyTheme" class="form-label">Daily Theme</label>
                 <select class="form-select" id="dailyTheme" name="dailyTheme[]" multiple="multiple" required>
-                    {% for theme, genres in daily_themes.items() %}
-                        <option value="{{ theme }}">{{ theme }}</option>
+                    {% for theme in daily_themes %}
+                        <option value="{{ theme.id }}">{{ theme.theme_name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -41,6 +41,7 @@
                 <button type="button" class="btn btn-secondary" onclick="clearJournal()">Clear</button>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
+
         </form>
     </div>
 {% endblock %}
@@ -57,5 +58,13 @@
                 closeOnSelect: false
             });
         });
+
+        function clearJournal() {
+            document.getElementById('rating5').checked = true;
+
+            $('#dailyTheme').val(null).trigger('change');
+
+            document.getElementById('journalDescription').value = '';
+        }
     </script>
 {% endblock %}

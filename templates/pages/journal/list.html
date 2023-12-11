@@ -2,6 +2,38 @@
 
 {% block title %}{{ user['name'] }}'s Journals - MoodJams{% endblock %}
 
+{% block styles %}
+<style>
+    .post-it-note {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .post-it-note:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-it-note:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-view {
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+    }
+
+    .table-view:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-view:active {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
 {% block main %}
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center">
@@ -19,26 +51,21 @@
             {% if journal_list %}
                 <div class="row row-cols-1 row-cols-md-4 g-4">
                     {% for journal in journal_list %}
-                    <div class="col">
-                        <a href="{{ url_for('journal_details') }}" class="card text-decoration-none h-100">
-                            <div class="card-header">
-                                <h5 class="card-title">{{ journal.date }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">{{ journal.description | truncate(150) }}</p>
-                            </div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="fs-4">{% if journal.mood_rating == 1 %}😭{% elif journal.mood_rating == 2 %}😔{% elif journal.mood_rating == 3 %}😐{% elif journal.mood_rating == 4 %}😊{% elif journal.mood_rating == 5 %}😁{% endif %}</span>
+                        <div class="col">
+                            <div class="card h-100 post-it-note" onclick="window.location.href='{{ url_for('journal_details', journal_id=journal.id) }}'">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ journal.date | format_date }} {% if journal.mood_rating == 1 %}😭{% elif journal.mood_rating == 2 %}😔{% elif journal.mood_rating == 3 %}😐{% elif journal.mood_rating == 4 %}😊{% elif journal.mood_rating == 5 %}😁{% endif %}</h5>
+                                    <p class="card-text">{{ journal.description | truncate(150) }}</p>
                                 </div>
-                                <div>
-                                    {% for theme in journal.daily_themes %}
-                                        <span class="badge bg-secondary">{{ theme.theme_name }}</span>
-                                    {% endfor %}
+                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <div>
+                                        {% for theme in journal.daily_themes %}
+                                            <span class="badge bg-secondary">{{ theme.theme_name }}</span>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
                     {% endfor %}
                 </div>
             {% else %}
@@ -50,29 +77,25 @@
 
         <div id="tableDisplay" class="mt-4" style="display: none">
             {% if journal_list %}
-                <table class="table">
-                    <thead>
+                <table class="table table-hover">
+                    <thead class="table-dark thead-dark">
                         <tr>
                             <th scope="col">Date</th>
                             <th scope="col">Journal Content</th>
                             <th scope="col">Rating</th>
                             <th scope="col">Themes</th>
-                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for journal in journal_list %}
-                        <tr>
-                            <td>{{ journal.date }}</td>
+                        <tr class="table-view" onclick="window.location='{{ url_for('journal_details', journal_id=journal.id) }}';">
+                            <td>{{ journal.date | format_date }}</td>
                             <td>{{ journal.description | truncate(50) }}</td>
                             <td>{{ journal.mood_rating }} {% if journal.mood_rating == 1 %}😭{% elif journal.mood_rating == 2 %}😔{% elif journal.mood_rating == 3 %}😐{% elif journal.mood_rating == 4 %}😊{% elif journal.mood_rating == 5 %}😁{% endif %} </td>
                             <td>
                                 {% for theme in journal.daily_themes %}
                                     <span class="badge bg-secondary">{{ theme.theme_name }}</span>
                                 {% endfor %}
-                            </td>
-                            <td>
-                                <a href="{{ url_for('journal_details') }}" class="btn btn-primary btn-sm">View</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -84,6 +107,7 @@
                 </div>
             {% endif %}
         </div>
+
     </div>
 
     <script>
