@@ -5,6 +5,7 @@ from models import db, User, Journal, DailyTheme, Genre, journal_dailytheme, dai
 from datetime import date, datetime
 from dummy_data import create_dummy_data
 from keys import secret_key, spotify_client_id, spotify_client_secret
+from functions import get_daily_theme_genres, get_spotify_recommendations, save_to_saved_tracks, get_saved_tracks
 
 app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///moodjams.db'
@@ -41,12 +42,13 @@ def home():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
-        if user.spotify_access_token and user.spotify_refresh_token:
+        if 'spotify_token' in session:
             return redirect(url_for('journal_list'))
         else:
             return redirect(url_for('login_spotify'))
     else:
         return redirect(url_for('login'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -83,22 +85,19 @@ def spotify_authorize():
         spotify_user = json.loads(spotify_user)
 
         user = db.session.get(User, session['user_id'])
-        user.spotify_access_token = token["access_token"]
         user.spotify_refresh_token = token["refresh_token"]
         user.spotify_user_id = spotify_user["id"]
         db.session.commit()
-
         session['spotify_token'] = token
+
         flash('Spotify authorization successful!', 'success')
 
     return redirect(url_for('home'))
 
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if 'user_id' in session:
-        session.pop('spotify_token', None)
         return redirect(url_for('home'))
 
     if request.method == 'POST':
@@ -127,7 +126,7 @@ def journal_list():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
-        if user.spotify_access_token and user.spotify_refresh_token:
+        if 'spotify_token' in session:
             journals = Journal.query.filter_by(user_id=user.id).order_by(Journal.date.desc()).all()
             return render_template('/pages/journal/list.html', user=user, journal_list=journals)
         else:
@@ -140,7 +139,7 @@ def journal_list():
 def add_journal():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
-        if user.spotify_access_token and user.spotify_refresh_token:
+        if 'spotify_token' in session:
             if request.method == 'POST':
                 mood_rating = int(request.form.get('moodRating'))
                 description = request.form.get('journalDescription')
@@ -183,14 +182,85 @@ def journal_details(journal_id):
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
-        if user.spotify_access_token and user.spotify_refresh_token:
+        if 'spotify_token' in session:
             journal = db.session.get(Journal, journal_id)
 
             if journal:
-                return render_template('/pages/journal/show.html', journal=journal)
+                daily_theme_genres = get_daily_theme_genres(journal_id, db)
+                if daily_theme_genres:
+                    recommendations = get_spotify_recommendations(daily_theme_genres, user, oauth, db, 3)
+                    if recommendations:
+                        return render_template('/pages/journal/show.html', journal=journal,
+                                               recommendations=recommendations)
+                    else:
+                        flash('No song recommendations found for this journal.', 'error')
+                        return render_template('/pages/journal/show.html', journal=journal)
+                else:
+                    flash('No daily theme genres found for this journal.', 'error')
+                    return render_template('/pages/journal/show.html', journal=journal)
             else:
                 flash('Journal not found.', 'error')
                 return redirect(url_for('journal_list'))
+        else:
+            return redirect(url_for('login_spotify'))
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/journal/delete/<int:journal_id>', methods=['POST'])
+def delete_journal(journal_id):
+    if 'user_id' in session:
+        user = db.session.get(User, session['user_id'])
+
+        if 'spotify_token' in session:
+            journal = db.session.get(Journal, journal_id)
+
+            if journal:
+                db.session.delete(journal)
+                db.session.commit()
+                flash('Journal entry deleted successfully!', 'success')
+            else:
+                flash('Journal entry not found.', 'error')
+        else:
+            flash('Spotify authorization required to delete journal entries.', 'error')
+
+    return redirect(url_for('journal_list'))
+
+@app.route('/save_track/<string:journal_id>', methods=['POST'])
+def save_track(journal_id):
+    track_uri = request.form.get('track_uri')
+    if 'user_id' in session:
+        user = db.session.get(User, session['user_id'])
+
+        if 'spotify_token' in session:
+            success, error_message = save_to_saved_tracks(track_uri, oauth, user, db)
+            if success:
+                flash('Track saved to Saved Tracks!', 'success')
+            else:
+                flash(f'Failed to save track to Saved Tracks. {error_message}', 'error')
+        else:
+            flash('Spotify authorization required to save tracks.', 'error')
+
+    return redirect(url_for('journal_details', journal_id=journal_id))
+
+@app.route('/track')
+def saved_tracks_list():
+    if 'user_id' in session:
+        user = db.session.get(User, session['user_id'])
+
+        if 'spotify_token' in session:
+            limit = 20
+            offset = int(request.args.get('offset', 0))
+
+            saved_tracks_data = get_saved_tracks(oauth, user, db, limit=limit, offset=offset)
+            if saved_tracks_data:
+                total_tracks = saved_tracks_data.get('total', 0)
+                items = saved_tracks_data.get('items', [])
+
+                return render_template('/pages/track/list.html', user=user, total_tracks=total_tracks, items=items,
+                                       limit=limit, offset=offset)
+            else:
+                flash('Failed to retrieve saved tracks.', 'error')
+                return redirect(url_for('home'))
         else:
             return redirect(url_for('login_spotify'))
     else:
@@ -200,9 +270,9 @@ def journal_details(journal_id):
 def logout():
     session.pop('user_id', None)
     session.pop('spotify_token', None)
-
     flash('You have been successfully logged out.', 'success')
     return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     with app.app_context():

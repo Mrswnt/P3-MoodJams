@@ -10,7 +10,6 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
 
     spotify_user_id = db.Column(db.String(255), nullable=True)
-    spotify_access_token = db.Column(db.Text, nullable=True)
     spotify_refresh_token = db.Column(db.Text, nullable=True)
 
     journals = db.relationship('Journal', back_populates='user')

@@ -1,16 +1,16 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <div class="alert-container">
+        <div class="alert-container mb-0">
             {% for message in messages %}
                 {% set alert_type = message[0] %}
                 {% set alert_message = message[1] if message|length > 1 else '' %}
 
                 {% if alert_type == 'success' %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
                 {% elif alert_type == 'error' %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
                 {% else %}
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <div class="alert alert-info alert-dismissible fade show mb-0" role="alert">
                 {% endif %}
 
                 {{ alert_message }}

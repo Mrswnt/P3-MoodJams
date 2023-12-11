@@ -5,44 +5,25 @@ mock_user_data = {'name': 'John Doe', 'email': 'john@example.com', 'password': '
 mock_user = User(**mock_user_data)
 
 mock_journal_list_data = [
-    {'date': '2023-01-15', 'mood_rating': 3, 'themes': ['Family Time', 'Nature'],
-     'description': 'Quality time with family in nature.'},
-    {'date': '2023-01-20', 'mood_rating': 4, 'themes': ['Me Time', 'Reading'],
-     'description': 'Enjoyed a good book during some me time.'},
-    {'date': '2023-01-25', 'mood_rating': 5, 'themes': ['Friendship', 'Happy Hour'],
-     'description': 'Fun night out with friends at a happy hour.'},
-    {'date': '2023-01-30', 'mood_rating': 2, 'themes': ['Love', 'Romantic Dinner'],
-     'description': 'Romantic dinner with a loved one.'},
-    {'date': '2023-02-05', 'mood_rating': 4, 'themes': ['Adventure', 'Traveling'],
-     'description': 'Exciting adventures while traveling.'},
-    {'date': '2023-02-10', 'mood_rating': 3, 'themes': ['Coding/Programming', 'Creativity'],
-     'description': 'Productive day filled with coding and creativity.'},
-    {'date': '2023-02-15', 'mood_rating': 5, 'themes': ['Gaming', 'Excited'],
-     'description': 'High-energy gaming session.'},
-    {'date': '2023-02-20', 'mood_rating': 1, 'themes': ['Meditation', 'Stressed'],
-     'description': 'Attempted meditation to cope with stress.'},
-    {'date': '2023-02-25', 'mood_rating': 4, 'themes': ['Creativity', 'Happy'],
-     'description': 'Expressed creativity and felt happy about the outcome.'},
-    {'date': '2023-03-01', 'mood_rating': 3, 'themes': ['Happy Hour', 'Dancing'],
-     'description': 'Danced the night away at a happy hour event.'},
-    {'date': '2023-03-05', 'mood_rating': 2, 'themes': ['Rainy Day', 'Reflective'],
-     'description': 'Reflective moments on a cozy rainy day.'},
-    {'date': '2023-03-10', 'mood_rating': 4, 'themes': ['Productivity', 'Workout'],
-     'description': 'Achieved high productivity and a good workout.'},
-    {'date': '2023-03-15', 'mood_rating': 5, 'themes': ['Dancing', 'Excited'],
-     'description': 'Spontaneous dancing and excitement.'},
+    {'date': '2023-01-15', 'mood_rating': 3, 'themes': ['Family Time', 'Nature'], 'description': 'Quality time with family in nature.'},
+    {'date': '2023-01-20', 'mood_rating': 4, 'themes': ['Me Time', 'Reading'], 'description': 'Enjoyed a good book during some me time.'},
+    {'date': '2023-01-25', 'mood_rating': 5, 'themes': ['Friendship', 'Happy Hour'], 'description': 'Fun night out with friends at a happy hour.'},
+    {'date': '2023-01-30', 'mood_rating': 2, 'themes': ['Love', 'Romantic Dinner'], 'description': 'Romantic dinner with a loved one.'},
+    {'date': '2023-02-05', 'mood_rating': 4, 'themes': ['Adventure', 'Traveling'], 'description': 'Exciting adventures while traveling.'},
+    {'date': '2023-02-10', 'mood_rating': 3, 'themes': ['Coding/Programming', 'Creativity'], 'description': 'Productive day filled with coding and creativity.'},
+    {'date': '2023-02-15', 'mood_rating': 5, 'themes': ['Gaming', 'Excited'], 'description': 'High-energy gaming session.'},
+    {'date': '2023-02-20', 'mood_rating': 1, 'themes': ['Meditation', 'Stressed'], 'description': 'Attempted meditation to cope with stress.'},
+    {'date': '2023-02-25', 'mood_rating': 4, 'themes': ['Creativity', 'Happy'], 'description': 'Expressed creativity and felt happy about the outcome.'},
+    {'date': '2023-03-01', 'mood_rating': 3, 'themes': ['Happy Hour', 'Dancing'], 'description': 'Danced the night away at a happy hour event.'},
+    {'date': '2023-03-05', 'mood_rating': 2, 'themes': ['Rainy Day', 'Reflective'], 'description': 'Reflective moments on a cozy rainy day.'},
+    {'date': '2023-03-10', 'mood_rating': 4, 'themes': ['Productivity', 'Workout'], 'description': 'Achieved high productivity and a good workout.'},
+    {'date': '2023-03-15', 'mood_rating': 5, 'themes': ['Dancing', 'Excited'], 'description': 'Spontaneous dancing and excitement.'},
 ]
 
 mock_recommendations_data = [
-    {'name': 'Blinding Lights', 'artist': 'The Weeknd',
-     'cover': 'https://i.scdn.co/image/ab67616d00001e028863bc11d2aa12b54f5aeb36',
-     'spotify_link': 'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b'},
-    {'name': 'Someone You Loved', 'artist': 'Lewis Capaldi',
-     'cover': 'https://i.scdn.co/image/ab67616d00001e02fc2101e6889d6ce9025f85f2',
-     'spotify_link': 'https://open.spotify.com/track/7qEHsqek33rTcFNT9PFqLf'},
-    {'name': 'Watermelon Sugar', 'artist': 'Harry Styles',
-     'cover': 'https://i.scdn.co/image/ab67616d00001e0277fdcfda6535601aff081b6a',
-     'spotify_link': 'https://open.spotify.com/track/6UelLqGlWMcVH1E5c4H7lY'}
+    {'name': 'Blinding Lights', 'artist': 'The Weeknd', 'cover': 'https://i.scdn.co/image/ab67616d00001e028863bc11d2aa12b54f5aeb36', 'spotify_link': 'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b'},
+    {'name': 'Someone You Loved', 'artist': 'Lewis Capaldi', 'cover': 'https://i.scdn.co/image/ab67616d00001e02fc2101e6889d6ce9025f85f2', 'spotify_link': 'https://open.spotify.com/track/7qEHsqek33rTcFNT9PFqLf'},
+    {'name': 'Watermelon Sugar', 'artist': 'Harry Styles', 'cover': 'https://i.scdn.co/image/ab67616d00001e0277fdcfda6535601aff081b6a', 'spotify_link': 'https://open.spotify.com/track/6UelLqGlWMcVH1E5c4H7lY'}
 ]
 
 daily_themes_data = {
@@ -68,7 +49,6 @@ daily_themes_data = {
     "Dancing": ["dance", "electronic", "pop", "disco"],
 }
 
-
 def create_dummy_data():
     db.create_all()
 
@@ -82,14 +62,15 @@ def create_dummy_data():
         if not theme:
             theme = DailyTheme(theme_name=theme_name)
             db.session.add(theme)
-            db.session.commit()
-            for genre_name in genres:
-                genre = Genre.query.filter_by(genre_name=genre_name).first()
-                if not genre:
-                    genre = Genre(genre_name=genre_name)
-                    theme.genres.append(genre)
-                    db.session.add(genre)
-            db.session.commit()
+
+        for genre_name in genres:
+            genre = Genre.query.filter_by(genre_name=genre_name).first()
+            if not genre:
+                genre = Genre(genre_name=genre_name)
+                db.session.add(genre)
+
+            if genre not in theme.genres:
+                theme.genres.append(genre)
 
     db.session.commit()
 
@@ -108,7 +89,6 @@ def create_dummy_data():
                     journal.daily_themes.append(theme)
             db.session.add(journal)
     db.session.commit()
-
 
 if __name__ == "__main__":
     create_dummy_data()

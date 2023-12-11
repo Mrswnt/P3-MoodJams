@@ -1,0 +1,122 @@
+{% extends 'user.html' %}
+
+{% block title %}{{ user['name'] }}'s Saved Tracks - MoodJams{% endblock %}
+
+{% block styles %}
+<style>
+    .track-card {
+        margin-bottom: 20px;
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .track-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .track-card:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .track-card img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .table-view {
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+    }
+
+    .table-view:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-view:active {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ user['name'] }}'s Saved Tracks</h2>
+            <div class="form-check form-switch mt-3">
+                <input class="form-check-input" type="checkbox" id="notesTableToggle" checked>
+                <label class="form-check-label" for="notesTableToggle">Cards</label>
+            </div>
+        </div>
+
+        <div id="notesDisplay" class="mt-4">
+            {% if items %}
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                    {% for track in items %}
+                        <div class="col">
+                            <div class="card h-100 track-card" onclick="window.open('{{ track['track']['external_urls']['spotify'] }}', '_blank');">
+                                <img src="{{ track['track']['album']['images'][0]['url'] }}" class="card-img-top" alt="{{ track['track']['name'] }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ track['track']['name'] }} - {{ track['track']['artists'][0]['name'] }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info mt-3" role="alert">
+                    No saved tracks available.
+                </div>
+            {% endif %}
+        </div>
+
+        <div id="tableDisplay" class="mt-4" style="display: none">
+            {% if items %}
+                <table class="table table-hover">
+                    <thead class="table-dark thead-dark">
+                        <tr>
+                            <th scope="col">Cover</th>
+                            <th scope="col">Track Name</th>
+                            <th scope="col">Artist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for track in items %}
+                            <tr class="table-view" onclick="window.open('{{ track['track']['external_urls']['spotify'] }}', '_blank');">
+                                <td style="width: 10%"><img src="{{ track['track']['album']['images'][0]['url'] }}" class="img-thumbnail" alt="{{ track['track']['name'] }}"></td>
+                                <td>{{ track['track']['name'] }}</td>
+                                <td>{{ track['track']['artists'][0]['name'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info mt-3" role="alert">
+                    No saved tracks available.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const toggleSwitch = document.getElementById('notesTableToggle');
+        const notesDisplay = document.getElementById('notesDisplay');
+        const tableDisplay = document.getElementById('tableDisplay');
+
+        const toggleLabel = document.querySelector('[for="notesTableToggle"]');
+
+        toggleSwitch.addEventListener('change', () => {
+            if (toggleSwitch.checked) {
+                notesDisplay.style.display = 'block';
+                tableDisplay.style.display = 'none';
+                toggleLabel.innerHTML = 'Cards';
+            } else {
+                notesDisplay.style.display = 'none';
+                tableDisplay.style.display = 'block';
+                toggleLabel.innerHTML = 'Table';
+            }
+        });
+    </script>
+{% endblock %}
